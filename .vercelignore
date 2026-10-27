@@ -1,0 +1,19 @@
+# Exclude local dev & non-deployment artifacts from Vercel Serverless bundle
+uploads/
+vendor_pkgs/
+arrow-escape-mobile.html
+arrow-puzzle-arena-vercel.zip
+build_bundle.py
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.gunicorn/
+.git/
+.DS_Store
+data/accounts.json
+data/orders.json
+data/payment_config.json
+data/challenges.json
+data/daily_arena.json
+data/friends.json

@@ -1,0 +1,24 @@
+{
+  "name": "Arrow Puzzle: Arena",
+  "short_name": "Arrow Arena",
+  "description": "Arrow Puzzle: Arena — 120 FPS Daily Arena, Split-Screen Friend Challenges & Weekly Leagues",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#060916",
+  "theme_color": "#060916",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='42' fill='%23090f26'/%3E%3Crect x='14' y='14' width='164' height='164' rx='32' fill='none' stroke='%23fbbf24' stroke-width='6'/%3E%3Cpath d='M46 136 H98 V66 H142' fill='none' stroke='%23fbbf24' stroke-width='16' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='120 44 148 66 120 88' fill='none' stroke='%2322d3ee' stroke-width='16' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='112' fill='%23090f26'/%3E%3Crect x='36' y='36' width='440' height='440' rx='86' fill='none' stroke='%23fbbf24' stroke-width='16'/%3E%3Cpath d='M122 362 H260 V176 H378' fill='none' stroke='%23fbbf24' stroke-width='42' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpolyline points='318 118 394 176 318 234' fill='none' stroke='%2322d3ee' stroke-width='42' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

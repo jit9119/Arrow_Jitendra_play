@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#060916" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Arrow Puzzle: Arena" />
+  <title>Arrow Puzzle: Arena</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <link rel="manifest" href="manifest.json?v=17" />
+  <link rel="stylesheet" href="styles.css?v=17" />
+</head>
+<body data-theme="cosmic">
+  <div class="app-viewport">
+    <main class="phone-frame" id="phoneFrame">
+      <!-- Living Ambient Starlight, Firefly & Aurora Environment Canvas -->
+      <canvas class="env-backdrop-canvas" id="envBackdropCanvas" aria-hidden="true"></canvas>
+
+      <!-- Toast Notification -->
+      <div class="toast-banner" id="toastBanner"></div>
+
+      <!-- ================= 1. HOME PAGE VIEW ================= -->
+      <section class="screen-view active" id="homeScreen">
+        <header class="home-topbar">
+          <button class="profile-pill" id="btnHomeProfile" title="Edit Player Name & Avatar">
+            <span id="homeAvatar">🦊</span>
+            <span id="homePlayerName">Player</span>
+          </button>
+
+          <div style="display:flex;align-items:center;gap:5px;">
+            <button type="button" class="home-download-pill" id="btnHomeTopDownload" title="Download Full Offline Game">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download</span>
+            </button>
+            <button class="wallet-btn" id="btnHomeGems" title="Open Gem Store">
+              <span>💎</span>
+              <span id="homeGemCount">0</span>
+              <span class="wallet-plus">+</span>
+            </button>
+            <button class="icon-btn" id="btnHomeSettings" title="Game Settings" aria-label="Settings">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 20.5 7 20.5 17 12 22 3.5 17 3.5 7 12 2"></polygon>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="home-scroll">
+          <!-- Hero Neon Play Stage Card -->
+          <div class="hero-neon-card" id="heroNeonCard">
+            <div class="world-chapter-chip" id="heroChapterBanner">✨ Chapter 1 • Starlight Sanctuary</div>
+            <div class="neon-level-pill" id="heroLevelPill">Level 1</div>
+            <div class="hero-preview-wrap">
+              <canvas id="heroPreviewCanvas" width="124" height="124" style="width:112px;height:112px;"></canvas>
+            </div>
+            <div style="font-size:1.08rem;font-weight:900;letter-spacing:0.2px;" id="heroShapeTitle">
+              Golden Heart
+            </div>
+            <div style="font-size:0.74rem;color:var(--text-muted);font-weight:600;" id="heroTaskText">
+              Clear Reward: +5 💎 • Goal: Solve with 0 mistakes
+            </div>
+
+            <!-- World Journey Progress Meter -->
+            <div style="width:100%;margin:4px 0 6px;">
+              <div class="world-progress-track">
+                <div class="world-progress-fill" id="homeWorldProgressFill"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:0.66rem;font-weight:800;color:var(--text-muted);">
+                <span id="homeSolvedCountLabel">🌟 0 / 150 Cleared</span>
+                <span id="homeComboRecordLabel">🔥 Best Flow x1</span>
+              </div>
+            </div>
+
+            <button class="play-cta-btn" id="btnHeroPlay">
+              ▶ PLAY LEVEL 1
+            </button>
+
+            <div style="display:flex;gap:8px;width:100%;margin-top:8px;">
+              <button type="button" class="secondary-btn" id="btnHubLevels" style="flex:1.35;padding:8px 10px;font-size:0.75rem;">
+                🗺️ World Levels (1–150)
+              </button>
+              <button type="button" class="secondary-btn" id="btnPlayRandomLevel" style="flex:1;padding:8px 10px;font-size:0.75rem;" title="Play a Fun Unlocked Level">
+                🎲 Quick Play
+              </button>
+            </div>
+            <button type="button" class="home-hero-download-btn" id="btnHomeDownloadOffline" title="Download Full Offline Game">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download</span>
+            </button>
+          </div>
+
+          <!-- Playful Active Style & Environment Showcase -->
+          <div class="home-loadout-card" id="homePlayLoadoutCard">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <span style="font-size:0.78rem;font-weight:900;color:var(--gold-primary);">🎮 Your Active Game Environment</span>
+              <span style="font-size:0.66rem;font-weight:700;color:var(--text-muted);">Tap to Customize</span>
+            </div>
+            <div class="home-loadout-grid">
+              <button type="button" class="loadout-mini-btn" id="btnHomeEquipSkin">
+                <span class="loadout-mini-ico" id="homeEquippedSkinIcon">🏹</span>
+                <span class="loadout-mini-lbl">Arrow</span>
+                <span class="loadout-mini-val" id="homeEquippedSkinName">Classic</span>
+              </button>
+              <button type="button" class="loadout-mini-btn" id="btnHomeEquipTrail">
+                <span class="loadout-mini-ico" id="homeEquippedTrailIcon">✨</span>
+                <span class="loadout-mini-lbl">Trail</span>
+                <span class="loadout-mini-val" id="homeEquippedTrailName">Sparkles</span>
+              </button>
+              <button type="button" class="loadout-mini-btn" id="btnHomeEquipTheme">
+                <span class="loadout-mini-ico" id="homeEquippedThemeIcon">🌌</span>
+                <span class="loadout-mini-lbl">World</span>
+                <span class="loadout-mini-val" id="homeEquippedThemeName">Cosmic</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 2. GAMEPLAY VIEW (CAMPAIGN & DAILY ARENA) ================= -->
+      <section class="screen-view" id="playScreen">
+        <header class="top-header">
+          <div class="header-left">
+            <button class="icon-btn" id="btnBackHome" title="Back to Home" aria-label="Home">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="11 18 5 12 11 6"></polyline>
+              </svg>
+            </button>
+            <button class="icon-btn" id="btnOpenMapPlay" title="Levels 1–150 Map" aria-label="Levels">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+                <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+                <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+                <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+              </svg>
+            </button>
+          </div>
+
+          <div style="text-align:center;cursor:pointer;" id="levelHeadingTap" title="Open Level Map">
+            <div style="font-size:0.95rem;font-weight:800;" id="headerShapeTitle">Golden Heart</div>
+            <div style="font-size:0.67rem;color:var(--text-muted);font-weight:600;" id="headerLevelSubtitle">Chapter 1 • Tactical</div>
+          </div>
+
+          <div class="header-right">
+            <button class="icon-btn" id="btnOpenSettings" title="120 FPS, Haptics & Settings" aria-label="Settings">
+              <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 20.5 7 20.5 17 12 22 3.5 17 3.5 7 12 2"></polygon>
+                <circle cx="12" cy="12" r="3"></circle>
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <!-- Sub-header: Droplets + Gem Wallet + Stuck Rescue + Level Task / Speedrun Timer -->
+        <section class="status-bar">
+          <div class="droplets-wrap">
+            <div id="dropletsContainer" style="display:flex;gap:4px;align-items:center;"></div>
+            <button class="gems-chip" id="gemsDisplay" title="Tap to buy Gems">💎 0 +</button>
+            <button class="stuck-chip" id="btnStuckHelp" title="Need a Boost?">⚡ Boost</button>
+          </div>
+          <div class="task-pill" id="taskPill" title="Current Goal">
+            🎯 Solve with 0 mistakes
+          </div>
+        </section>
+
+        <!-- Playful Board Escape Progress Bar -->
+        <div class="board-escape-bar-wrap">
+          <div class="board-escape-track">
+            <div class="board-escape-fill" id="boardEscapeFill"></div>
+          </div>
+          <span class="board-escape-pill" id="boardEscapePill">🏹 0 Left</span>
+        </div>
+
+        <!-- Glowing Luxury / Legendary Board Card -->
+        <section class="board-stage" id="boardStage">
+          <div class="neon-board-frame" id="neonBoardFrame">
+            <div class="board-level-pill" id="boardLevelPill">Level 1</div>
+            <canvas id="gameCanvas"></canvas>
+          </div>
+
+          <div class="floating-hud">
+            <div class="combo-badge" id="comboBadge">Combo x2</div>
+            <div class="fps-badge" id="fpsBadge">120 FPS</div>
+          </div>
+          <div class="zoom-hint-pill" id="zoomHintPill" style="display:none;">Zoom 1.65x • Drag to pan</div>
+        </section>
+
+        <!-- Compact Gameplay Tools right above Persistent Bottom Nav -->
+        <footer class="bottom-controls">
+          <button class="round-tool-btn" id="btnGridZoom" title="Toggle Grid & Zoom">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2.5"></rect>
+              <line x1="9" y1="3" x2="9" y2="21"></line>
+              <line x1="15" y1="3" x2="15" y2="21"></line>
+              <line x1="3" y1="9" x2="21" y2="9"></line>
+              <line x1="3" y1="15" x2="21" y2="15"></line>
+            </svg>
+            <span class="tool-label" id="lblGridZoom">Grid</span>
+          </button>
+
+          <button class="round-tool-btn" id="btnUndo" title="Undo Move">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 14 4 9l5-5"></path>
+              <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5v0a5.5 5.5 0 0 1-5.5 5.5H11"></path>
+            </svg>
+            <span class="tool-label">Undo</span>
+          </button>
+
+          <button class="round-tool-btn" id="btnHint" title="Highlight Solvable Arrow">
+            <span class="tool-badge" id="hintCountBadge">3</span>
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.95" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18h6"></path>
+              <path d="M10 22h4"></path>
+              <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A6 6 0 1 0 7.5 11.5c.76.76 1.23 1.52 1.41 2.5"></path>
+            </svg>
+            <span class="tool-label">Hint</span>
+          </button>
+
+          <button class="round-tool-btn accent-theme-btn" id="btnQuickRestartPlay" title="Fresh Shuffle & Restart Level">
+            <span style="font-size:1.05rem;line-height:1;">↻</span>
+            <span class="tool-label">Restart</span>
+          </button>
+        </footer>
+      </section>
+
+      <!-- ================= MODALS ================= -->
+
+      <!-- 1. Win Modal (+5 Gems Campaign!) -->
+      <div class="modal-backdrop" id="modalWin">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 id="winTitle">✨ Level Cleared! (+5 💎)</h3>
+          </div>
+          <div class="modal-body">
+            <div class="reveal-canvas-box">
+              <canvas id="winArtworkCanvas" width="180" height="180" style="width:142px;height:142px;"></canvas>
+              <div style="font-weight:800;font-size:1rem;margin-top:4px;" id="winShapeName">Golden Heart</div>
+              <div style="font-size:0.74rem;color:var(--text-muted);" id="winAlbumSaved">Level 2 Unlocked! • Earned +5 💎</div>
+            </div>
+            <div class="stats-row">
+              <div class="stat-tile">
+                <div class="val" id="winGemsGain">+5 💎</div>
+                <div class="lbl">Gem Reward</div>
+              </div>
+              <div class="stat-tile">
+                <div class="val" id="winScoreGain">+240</div>
+                <div class="lbl">Score</div>
+              </div>
+              <div class="stat-tile">
+                <div class="val" id="winTimeVal">0:38</div>
+                <div class="lbl">Solve Time</div>
+              </div>
+            </div>
+            <div id="winTaskBanner" style="text-align:center;font-size:0.79rem;font-weight:700;padding:8px;border-radius:11px;background:var(--bg-slot);border:1px solid var(--border-neon);"></div>
+            <div class="btn-stack">
+              <button class="primary-btn gold" id="btnNextLevel">Play Next Level →</button>
+              <div style="display:flex;gap:8px;">
+                <button class="secondary-btn" id="btnWinHome" style="flex:1;">🏠 Home</button>
+                <button class="secondary-btn" id="btnWinLevels" style="flex:1;">🗺️ Levels</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Direct Gem Level Unlock Modal -->
+      <div class="modal-backdrop" id="modalUnlockLevel">
+        <div class="modal-card" style="max-width:360px;">
+          <div class="modal-header">
+            <h3 id="unlockLevelHeading">🔓 Unlock Level</h3>
+            <button class="close-x" data-close="modalUnlockLevel">✕</button>
+          </div>
+          <div class="modal-body" style="text-align:center;">
+            <div class="reveal-canvas-box" style="position:relative;padding:14px;">
+              <canvas id="unlockPreviewCanvas" width="120" height="120" style="width:108px;height:108px;"></canvas>
+              <div style="position:absolute;top:52px;width:36px;height:36px;border-radius:50%;background:rgba(6,9,22,0.8);border:1.5px solid #fbbf24;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🔒</div>
+              <div style="font-weight:800;font-size:1rem;margin-top:6px;" id="unlockShapeTitle">Champion Trophy</div>
+              <div style="font-size:0.75rem;color:var(--text-muted);margin-top:2px;" id="unlockSubNote">Unlock directly with Gems or clear previous levels one by one!</div>
+            </div>
+            <div class="btn-stack">
+              <button class="primary-btn gold" id="btnConfirmGemUnlock">🔓 Unlock Now for 10 💎</button>
+              <button class="secondary-btn" id="btnBuyGemsForUnlock">💎 Need More Gems? Open Gem Shop</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Out of Droplets — Need a Boost? Modal (Exact 4 Buttons, NO Wallet Balance Box!) -->
+      <div class="modal-backdrop" id="modalContinue">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 id="continueModalTitle">💧 Out of Droplets — Need a Boost?</h3>
+            <button class="close-x" id="btnCloseContinue">✕</button>
+          </div>
+          <div class="modal-body">
+            <p id="nearMissText" style="margin:0 0 12px;font-size:0.84rem;line-height:1.45;"></p>
+            <div class="btn-stack">
+              <button class="primary-btn" id="btnContinueGems">
+                Continue (5 Gems 💎)
+              </button>
+              <button class="primary-btn gold" id="btnGemBoostRestart">
+                Gem Power Restart (5 + Free Hint) — 25 Gems 💎 (Have 0 💎)
+              </button>
+              <button class="secondary-btn" id="btnContinueAd" style="border-color:var(--gold-primary);color:var(--gold-primary);">
+                🎬 Watch Ad (+10 Gems 💎)
+              </button>
+              <button class="secondary-btn" id="btnRetryFree">
+                Restart [ Free ]
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Gem Store Modal (.payment-modal => hides Global Bottom Nav; NO Wallet Balance box, NO Instant Cashout!) -->
+      <div class="modal-backdrop payment-modal" id="modalGems">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3>💎 Gem Store</h3>
+            <button class="close-x" data-close="modalGems">✕</button>
+          </div>
+          <div class="modal-body">
+            <!-- Target Gem Account Banner -->
+            <div class="account-target-banner">
+              <div style="min-width:0;flex:1;">
+                <div style="font-size:0.65rem;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px;">
+                  Crediting Gems & Bundles To Account
+                </div>
+                <div style="font-size:0.81rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="storeAccountLabel">
+                  🦊 Player
+                </div>
+              </div>
+              <button class="secondary-btn" id="btnSwitchAccountFromStore" style="width:auto;padding:6px 10px;font-size:0.72rem;">
+                👤 Profile
+              </button>
+            </div>
+
+            <!-- 4 Official Gem & Skin/Trail Combo Packs -->
+            <div class="gem-pack-grid" id="gemPackGrid"></div>
+
+            <!-- Custom Player Choice Gem Amount (Player enters their own Gem value!) -->
+            <div class="custom-gem-box" id="customGemChoiceBox">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                <span style="font-size:0.78rem;font-weight:900;color:var(--gold-primary);">
+                  ✨ Custom Gem Choice (Enter Any Value)
+                </span>
+                <span style="font-size:0.68rem;font-weight:800;color:var(--cyan-primary);" id="customGemPricePreview">
+                  ₹75
+                </span>
+              </div>
+              <div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;">
+                Choose your exact Gem quantity below and buy directly:
+              </div>
+              <div class="custom-gem-chip-row">
+                <button type="button" class="custom-gem-chip" data-customgems="40">40 💎</button>
+                <button type="button" class="custom-gem-chip" data-customgems="100">100 💎</button>
+                <button type="button" class="custom-gem-chip" data-customgems="250">250 💎</button>
+                <button type="button" class="custom-gem-chip" data-customgems="1000">1000 💎</button>
+              </div>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="number" class="neon-input" id="inputCustomGemQty" min="10" max="100000" step="1" value="100" inputmode="numeric" placeholder="Enter Gems (e.g. 100)" style="flex:1;" />
+                <button type="button" class="primary-btn gold" id="btnBuyCustomGems" style="width:auto;padding:9px 14px;font-size:0.77rem;white-space:nowrap;">
+                  Buy 100 💎 • ₹75
+                </button>
+              </div>
+            </div>
+
+            <!-- Live Order Inquiries & Purchase History (Wait for Approval / Approved / Rejected — Auto-Synced!) -->
+            <div id="recentOrdersSection" style="margin-top:12px;display:none;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <span style="font-size:0.74rem;font-weight:800;color:var(--gold-primary);" id="recentOrdersHeadingText">
+                  🧾 Gem Order Inquiries & Status
+                </span>
+              </div>
+              <div id="recentOrdersList" style="display:flex;flex-direction:column;gap:6px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4B. Secure Payment Checkout Modal (.payment-modal => hides Global Bottom Nav; UPI UTR + Card + Razorpay) -->
+      <div class="modal-backdrop payment-modal" id="modalCheckout">
+        <div class="modal-card" style="max-width:420px;">
+          <div class="modal-header">
+            <h3 id="checkoutHeaderTitle">💳 Secure Payment Checkout</h3>
+            <button class="close-x" data-close="modalCheckout">✕</button>
+          </div>
+          <div class="modal-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:13px;background:var(--bg-slot);border:1px solid var(--border-neon);margin-bottom:10px;">
+              <div style="min-width:0;padding-right:8px;">
+                <div style="font-size:0.84rem;font-weight:800;" id="checkoutPackName">Starter Pack</div>
+                <div style="font-size:0.72rem;color:var(--gold-primary);font-weight:800;margin-top:2px;" id="checkoutPackGems">+25 💎</div>
+              </div>
+              <div style="font-size:1.16rem;font-weight:900;color:var(--cyan-primary);flex-shrink:0;" id="checkoutPackPrice">₹19</div>
+            </div>
+
+            <!-- Dedicated Confirmation Screen Shown Every Single Time Player Submits a Gem Order Inquiry (UPI & Card)! -->
+            <div id="checkoutWaitApprovalView" style="display:none;text-align:center;padding:14px 12px;border-radius:15px;background:rgba(245,158,11,0.12);border:1.5px solid rgba(251,191,36,0.75);margin-bottom:8px;">
+              <div style="font-size:2.1rem;line-height:1;margin-bottom:6px;">⏳</div>
+              <div style="display:inline-block;padding:4px 12px;border-radius:999px;background:rgba(245,158,11,0.25);border:1px solid #fbbf24;color:#fde047;font-size:0.78rem;font-weight:900;letter-spacing:0.6px;margin-bottom:6px;">
+                WAIT FOR APPROVAL
+              </div>
+              <div style="font-size:0.90rem;font-weight:800;color:var(--text-main);margin-bottom:4px;" id="waitApprovalHeadline">
+                Gem Order Inquiry Sent to Admin!
+              </div>
+              <div style="font-size:0.73rem;color:#fde68a;font-weight:800;margin-bottom:5px;" id="waitApprovalTimeBadge">
+                ⏱️ Approval Time: 2–10 Minutes
+              </div>
+              <div style="font-size:0.73rem;color:var(--text-muted);line-height:1.45;margin-bottom:8px;" id="waitApprovalDetails">
+                Please wait for approval. Gems & bundle items are credited to your account automatically as soon as Admin approves your payment!
+              </div>
+              <div style="padding:7px 10px;border-radius:10px;background:var(--bg-slot);border:1px solid var(--border-neon);font-size:0.71rem;font-family:ui-monospace,monospace;color:var(--cyan-primary);margin-bottom:10px;" id="waitApprovalRefBadge"></div>
+              <div class="btn-stack" style="gap:7px;">
+                <button type="button" class="primary-btn gold" id="btnSubmitAnotherInquiry">
+                  ➕ Place Another Gem Order
+                </button>
+                <button type="button" class="secondary-btn" id="btnBackToStoreFromWait">
+                  ✓ Back to Gem Store
+                </button>
+              </div>
+            </div>
+
+            <!-- Main Checkout Form Wrap -->
+            <div id="checkoutFormMainWrap">
+              <!-- Live Pending Verification Status Banner (Auto-Synced, No Check Status Button!) -->
+              <div class="pending-banner-box" id="checkoutPendingBox" style="display:none;">
+                <div style="margin-bottom:3px;">
+                  <strong style="color:#fde047;" id="checkoutPendingTitle">⏳ Wait for Approval</strong>
+                </div>
+                <div style="color:var(--text-muted);font-size:0.71rem;" id="checkoutPendingDesc">
+                  Approval Time: 2–10 Minutes. Your Gem order inquiry is waiting for Admin approval — you can also place another Gem order below!
+                </div>
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputCheckoutAccount">Player Profile ID to Receive Gems</label>
+                <input type="text" class="neon-input" id="inputCheckoutAccount" maxlength="80" placeholder="Player ID" readonly />
+              </div>
+
+              <div class="seg-tabs" id="checkoutMethodTabs">
+                <button class="seg-tab active" data-paytab="upi" id="tabBtnUpi">📱 UPI / QR</button>
+                <button class="seg-tab" data-paytab="card" id="tabBtnCard">💳 Card</button>
+                <button class="seg-tab" data-paytab="razorpay" id="tabBtnRazorpay">⚡ Gateway</button>
+              </div>
+
+              <!-- Optional Admin Payment Note -->
+              <div id="checkoutMerchantNote" style="display:none;padding:7px 10px;border-radius:10px;background:rgba(56,189,248,0.10);border:1px solid rgba(56,189,248,0.40);font-size:0.71rem;color:var(--cyan-primary);margin-bottom:9px;line-height:1.38;"></div>
+
+              <!-- Tab 1: Direct UPI Deep-Link + Permanent/Custom QR + UTR Verification -->
+              <div id="checkoutPaneUpi" style="text-align:center;">
+                <div style="font-size:0.74rem;color:var(--text-muted);margin-bottom:6px;" id="directUpiToLabel">
+                  Scan QR or Pay to UPI ID: 9119166816@ybl
+                </div>
+                <div class="upi-copy-strip" id="checkoutUpiCopyStrip" style="display:inline-flex;">
+                  <span style="color:var(--text-muted);">UPI:</span>
+                  <strong style="color:var(--gold-primary);word-break:break-all;" id="checkoutUpiIdText">9119166816@ybl</strong>
+                  <button type="button" class="secondary-btn" id="btnCopyMerchantUpi" style="width:auto;padding:2px 7px;font-size:0.64rem;">📋 Copy</button>
+                </div>
+                <div class="qr-frame-box">
+                  <img id="upiCustomQrImg" src="merchant-qr.jpg" alt="Merchant UPI QR" style="display:block;width:154px;height:154px;object-fit:contain;border-radius:8px;margin:0 auto;" />
+                  <canvas id="upiQrCanvas" width="148" height="148" style="display:none;width:140px;height:140px;"></canvas>
+                  <div style="font-size:0.65rem;font-weight:800;margin-top:4px;color:#334155;">Scan with PhonePe • GPay • Paytm</div>
+                </div>
+                <a class="primary-btn" id="btnOpenUpiAppLink" href="#" style="text-decoration:none;margin-bottom:9px;">
+                  📱 Open UPI App (PhonePe / GPay / Paytm)
+                </a>
+                <div class="form-field-group" style="text-align:left;margin-top:6px;">
+                  <label for="inputUpiUtr">Enter UPI UTR / Transaction Reference No. After Paying</label>
+                  <input type="text" class="neon-input" id="inputUpiUtr" maxlength="28" placeholder="e.g. 429815639012" />
+                </div>
+                <div class="approval-time-notice">
+                  ⏳ <strong>Approval Time: 2–10 Minutes</strong> • Every order stays in <strong>Wait for Approval</strong> until Admin confirms your payment.
+                </div>
+                <button class="primary-btn gold" id="btnVerifyUpiPayment">
+                  📤 Submit Gem Order Request
+                </button>
+              </div>
+
+              <!-- Tab 2: Debit / Credit Card Payment -> Settled to Merchant Account (9119166816@ybl) -->
+              <div id="checkoutPaneCard" style="display:none;">
+                <div class="settlement-receiver-strip" id="cardSettlementStrip">
+                  <span>🏦 Settlement Account:</span>
+                  <strong id="cardReceiverUpiText" style="color:#fde047;">9119166816@ybl</strong>
+                </div>
+                <div id="checkoutBankInfoBox" style="display:none;padding:8px 10px;border-radius:10px;background:var(--bg-slot);border:1px solid var(--border-neon);font-size:0.71rem;color:var(--gold-primary);margin-bottom:8px;line-height:1.4;"></div>
+
+                <!-- Direct Card Settlement Buttons (Hosted 3D-Secure Card Link + RuPay Card on UPI -> 9119166816@ybl) -->
+                <div id="cardDirectTransferActions" style="display:flex;flex-direction:column;gap:6px;margin-bottom:9px;">
+                  <a class="primary-btn gold" id="btnOpenHostedCardPage" href="#" target="_blank" rel="noopener noreferrer" style="display:none;text-decoration:none;font-size:0.76rem;padding:9px 12px;">
+                    💳 Pay via 3D-Secure Card Checkout Page
+                  </a>
+                  <a class="primary-btn" id="btnPayRupayCardOnUpi" href="#" style="text-decoration:none;font-size:0.75rem;padding:8px 11px;">
+                    💳 Step 1: Pay via Card / RuPay on UPI (9119166816@ybl)
+                  </a>
+                </div>
+
+                <div class="card-form-shell">
+                  <div class="form-field-group">
+                    <label for="inputCardNumber">Card Number (Visa / Mastercard / RuPay)</label>
+                    <div class="card-number-wrap">
+                      <input type="text" class="neon-input" id="inputCardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="19" placeholder="XXXX XXXX XXXX XXXX" />
+                      <span class="card-brand-pill" id="cardBrandBadge">💳 CARD</span>
+                    </div>
+                  </div>
+
+                  <div class="form-field-group">
+                    <label for="inputCardHolder">Cardholder Name</label>
+                    <input type="text" class="neon-input" id="inputCardHolder" autocomplete="cc-name" maxlength="36" placeholder="Name on Card" />
+                  </div>
+
+                  <div class="card-grid-row">
+                    <div class="form-field-group" style="margin-bottom:0;">
+                      <label for="inputCardExpiry">Expiry (MM/YY)</label>
+                      <input type="text" class="neon-input" id="inputCardExpiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/YY" />
+                    </div>
+                    <div class="form-field-group" style="margin-bottom:0;">
+                      <label for="inputCardCvv">CVV</label>
+                      <input type="password" class="neon-input" id="inputCardCvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="•••" />
+                    </div>
+                  </div>
+
+                  <div class="form-field-group" id="cardManualRefRow" style="margin-top:9px;margin-bottom:0;">
+                    <label for="inputCardAuthRef">Card / Bank Transaction Reference No. (After Paying)</label>
+                    <input type="text" class="neon-input" id="inputCardAuthRef" maxlength="24" placeholder="Enter Bank Ref / UTR (Optional)" />
+                  </div>
+                </div>
+
+                <div class="approval-time-notice" id="cardModeHint">
+                  ⏳ <strong>Approval Time: 2–10 Minutes</strong> • Every Card order stays in <strong>Wait for Approval</strong> until Admin confirms payment in <strong>9119166816@ybl</strong>.
+                </div>
+                <button class="primary-btn gold" id="btnPayWithCard">
+                  💳 Submit Card Order Request
+                </button>
+              </div>
+
+              <!-- Tab 3: Razorpay Express Gateway -->
+              <div id="checkoutPaneRazorpay" style="display:none;">
+                <div style="font-size:0.74rem;color:var(--text-muted);line-height:1.45;margin-bottom:10px;" id="razorpayModeHint">
+                  Instant 3D-Secure Card, UPI, NetBanking & Wallet checkout powered by Razorpay.
+                </div>
+                <button class="primary-btn gold" id="btnPayWithRazorpay">
+                  ⚡ Pay via Razorpay Gateway
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4C-1. Hidden Admin PIN Login Gate (ONLY opens via ?admin=1 or Secret 5-Tap!) -->
+      <div class="modal-backdrop payment-modal" id="modalAdminLogin">
+        <div class="modal-card" style="max-width:360px;">
+          <div class="modal-header">
+            <h3>🔐 Restricted Admin Access</h3>
+            <button class="close-x" data-close="modalAdminLogin">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="margin:0 0 10px;font-size:0.75rem;color:var(--text-muted);line-height:1.45;">
+              Owner-only control panel for UTR/Card payment verification and gateway configuration.
+            </p>
+            <div class="form-field-group">
+              <label for="inputAdminLoginPin">Enter Secret Admin PIN</label>
+              <input type="password" class="neon-input" id="inputAdminLoginPin" inputmode="numeric" maxlength="24" placeholder="Enter Admin PIN" />
+            </div>
+            <button class="primary-btn gold" id="btnAdminLoginSubmit">
+              🔓 Unlock Admin Panel
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4C-2. Hidden Owner Admin Control Panel (Complete Payment System: Approvals, Plans, QR & Merchant Details, History) -->
+      <div class="modal-backdrop payment-modal" id="modalAdminPanel">
+        <div class="modal-card" style="max-width:450px;">
+          <div class="modal-header">
+            <h3>🛡️ Admin Payment Control</h3>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <button class="secondary-btn" id="btnAdminRefresh" style="width:auto;padding:5px 9px;font-size:0.70rem;" title="Refresh">🔄</button>
+              <button class="secondary-btn" id="btnAdminLogout" style="width:auto;padding:5px 9px;font-size:0.70rem;" title="Lock Admin">🔒</button>
+              <button class="close-x" data-close="modalAdminPanel">✕</button>
+            </div>
+          </div>
+          <div class="modal-body">
+            <div class="admin-stats-grid">
+              <div class="admin-stat-box">
+                <div class="stat-lbl">⏳ Pending</div>
+                <div class="stat-val" style="color:#fde047;" id="adminStatPending">0</div>
+              </div>
+              <div class="admin-stat-box">
+                <div class="stat-lbl">✅ Approved</div>
+                <div class="stat-val" style="color:#34d399;" id="adminStatApproved">0</div>
+              </div>
+              <div class="admin-stat-box">
+                <div class="stat-lbl">💰 Revenue</div>
+                <div class="stat-val" style="color:var(--cyan-primary);" id="adminStatRevenue">₹0</div>
+              </div>
+            </div>
+
+            <div class="seg-tabs" id="adminPanelTabs">
+              <button class="seg-tab active" data-admintab="pending" style="font-size:0.68rem;padding:7px 4px;">⏳ Verify (<span id="adminPendingTabCount">0</span>)</button>
+              <button class="seg-tab" data-admintab="plans" style="font-size:0.68rem;padding:7px 4px;">💎 Plans</button>
+              <button class="seg-tab" data-admintab="config" style="font-size:0.68rem;padding:7px 4px;">📱 QR & Setup</button>
+              <button class="seg-tab" data-admintab="history" style="font-size:0.68rem;padding:7px 4px;">📜 History</button>
+            </div>
+
+            <!-- Admin Tab 1: Pending UTR / Card Approvals + Direct Wallet Credit -->
+            <div id="adminPanePending">
+              <div id="adminPendingList"></div>
+
+              <div class="admin-plan-card" style="margin-top:12px;">
+                <div style="font-size:0.76rem;font-weight:800;color:var(--gold-primary);margin-bottom:6px;">
+                  🎁 Direct Gem Credit to Any Player Account
+                </div>
+                <div class="admin-plan-grid">
+                  <input type="text" class="neon-input" id="inputAdminCreditAcct" maxlength="80" placeholder="Email / Phone / Player ID" style="font-size:0.72rem;padding:7px 9px;" />
+                  <input type="number" class="neon-input" id="inputAdminCreditGems" min="1" max="500000" placeholder="Gems (e.g. 100)" style="font-size:0.72rem;padding:7px 9px;" />
+                </div>
+                <input type="text" class="neon-input" id="inputAdminCreditNote" maxlength="80" placeholder="Optional note (e.g. Manual Payment Verified)" style="font-size:0.72rem;padding:7px 9px;margin-top:6px;" />
+                <button class="primary-btn gold" id="btnAdminDirectCredit" style="margin-top:7px;padding:8px 10px;font-size:0.76rem;">
+                  💎 Send Gems to Player Now
+                </button>
+              </div>
+            </div>
+
+            <!-- Admin Tab 2: Merchant Plans / Gem Store Packs Manager -->
+            <div id="adminPanePlans" style="display:none;">
+              <p style="margin:0 0 8px;font-size:0.72rem;color:var(--text-muted);line-height:1.4;">
+                Edit your Gem Store plans, prices (`₹`), gem counts (`💎`), badges, or add new plans. Saving updates the live store immediately!
+              </p>
+              <div id="adminPlansEditorList"></div>
+              <div style="display:flex;gap:7px;margin-bottom:8px;">
+                <button class="secondary-btn" id="btnAdminAddPlan" style="flex:1;padding:8px 10px;font-size:0.74rem;">➕ Add New Plan</button>
+                <button class="secondary-btn" id="btnAdminResetPlans" style="flex:1;padding:8px 10px;font-size:0.74rem;">↺ Reset Defaults</button>
+              </div>
+              <button class="primary-btn gold" id="btnAdminSavePlans">
+                💾 Save All Merchant Plans
+              </button>
+            </div>
+
+            <!-- Admin Tab 3: Merchant Details, Custom QR Upload, Payment Switches & Keys -->
+            <div id="adminPaneConfig" style="display:none;">
+              <div style="padding:8px 10px;border-radius:11px;background:var(--bg-slot);border:1px solid var(--border-neon);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:0.72rem;font-weight:700;color:var(--text-muted);">Active Payment Mode:</span>
+                <span class="gateway-status-pill" id="merchantModePill">Manual Approval</span>
+              </div>
+
+              <!-- Custom QR Image Upload Box -->
+              <div class="admin-qr-upload-box">
+                <div style="font-size:0.77rem;font-weight:800;color:var(--gold-primary);">
+                  📷 Your Payment QR Code (PhonePe / GPay / Paytm / BharatPe)
+                </div>
+                <div style="font-size:0.68rem;color:var(--text-muted);margin-top:2px;" id="adminQrPreviewStatus">
+                  Auto-generating dynamic QR from Receiver UPI ID
+                </div>
+                <img id="adminQrPreviewImg" class="admin-qr-preview-img" alt="Merchant QR Preview" style="display:none;" />
+                <input type="file" id="inputAdminQrFile" accept="image/*" style="display:none;" />
+                <div style="display:flex;gap:7px;justify-content:center;margin-top:8px;">
+                  <button type="button" class="primary-btn" id="btnUploadAdminQr" style="width:auto;padding:7px 12px;font-size:0.73rem;">
+                    📤 Upload QR Image
+                  </button>
+                  <button type="button" class="secondary-btn" id="btnClearAdminQr" style="width:auto;padding:7px 11px;font-size:0.73rem;display:none;">
+                    🗑️ Clear QR
+                  </button>
+                </div>
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputMerchantName">Merchant / Store Display Name</label>
+                <input type="text" class="neon-input" id="inputMerchantName" maxlength="48" placeholder="e.g. My Gaming Store" />
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputMerchantUpi">Receiver UPI ID (Shown on Checkout + UPI App Deep-Link)</label>
+                <input type="text" class="neon-input" id="inputMerchantUpi" maxlength="80" placeholder="e.g. yourname@okaxis or 9876543210@ybl" />
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputMerchantPaymentNote">Checkout Instructions / Support Note (Optional)</label>
+                <input type="text" class="neon-input" id="inputMerchantPaymentNote" maxlength="160" placeholder="e.g. Pay exact amount and enter 12-digit UTR" />
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputMerchantBankInfo">Bank / Card Payment Receiver Details (Optional)</label>
+                <input type="text" class="neon-input" id="inputMerchantBankInfo" maxlength="180" placeholder="e.g. Account Holder / Bank Payment Instructions" />
+              </div>
+
+              <!-- Enable / Disable Payment Channels -->
+              <div style="padding:9px 10px;border-radius:12px;background:var(--bg-slot);border:1px solid var(--border-neon);margin-bottom:10px;">
+                <div style="font-size:0.73rem;font-weight:800;color:var(--gold-primary);margin-bottom:6px;">
+                  🎛️ Payment Channels Visible to Players
+                </div>
+                <div class="setting-row" style="padding:5px 0;">
+                  <span style="font-size:0.74rem;">📱 UPI / QR + UTR Payment</span>
+                  <button type="button" class="toggle-pill on" id="btnToggleUpiMethod">ON</button>
+                </div>
+                <div class="setting-row" style="padding:5px 0;">
+                  <span style="font-size:0.74rem;">💳 Card Number Payment</span>
+                  <button type="button" class="toggle-pill on" id="btnToggleCardMethod">ON</button>
+                </div>
+                <div class="setting-row" style="padding:5px 0;border-bottom:none;">
+                  <span style="font-size:0.74rem;">⚡ Razorpay Instant Gateway</span>
+                  <button type="button" class="toggle-pill on" id="btnToggleRazorpayMethod">ON</button>
+                </div>
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputRzpKeyId">Razorpay Key ID (Live Card -> Bank 9119166816@ybl Settlement)</label>
+                <input type="text" class="neon-input" id="inputRzpKeyId" maxlength="80" placeholder="rzp_live_xxxxxxxxxxxxxx" />
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputRzpKeySecret">Razorpay Key Secret (Stored on server only)</label>
+                <input type="password" class="neon-input" id="inputRzpKeySecret" maxlength="120" placeholder="Leave blank to keep existing secret" />
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputCashfreeAppId">Cashfree App ID (Alternative Live Card -> Bank Gateway)</label>
+                <input type="text" class="neon-input" id="inputCashfreeAppId" maxlength="80" placeholder="Optional Cashfree App ID" />
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputCashfreeSecretKey">Cashfree Secret Key (Stored on server only)</label>
+                <input type="password" class="neon-input" id="inputCashfreeSecretKey" maxlength="140" placeholder="Leave blank to keep existing secret" />
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputCardPaymentLink">Hosted Card Payment Link (e.g. razorpay.me/... or PayU link)</label>
+                <input type="url" class="neon-input" id="inputCardPaymentLink" maxlength="280" placeholder="https://razorpay.me/yourhandle" />
+              </div>
+
+              <div class="form-field-group">
+                <label for="inputMerchantNewPin">Change Secret Admin PIN (4+ digits/chars)</label>
+                <input type="password" class="neon-input" id="inputMerchantNewPin" maxlength="24" placeholder="Leave blank to keep current PIN" />
+              </div>
+
+              <button class="primary-btn gold" id="btnSaveMerchantConfig">
+                💾 Save Merchant, QR & Payment Settings
+              </button>
+            </div>
+
+            <!-- Admin Tab 4: Approved & Rejected History -->
+            <div id="adminPaneHistory" style="display:none;">
+              <div id="adminHistoryList"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4D. Player Profile Modal (Home > Profile: Save Player Name & Choose Avatar Only!) -->
+      <div class="modal-backdrop" id="modalAccount">
+        <div class="modal-card" style="max-width:385px;">
+          <div class="modal-header">
+            <h3>👤 Player Profile</h3>
+            <button class="close-x" data-close="modalAccount">✕</button>
+          </div>
+          <div class="modal-body">
+            <p style="margin:0 0 9px;font-size:0.75rem;color:var(--text-muted);line-height:1.45;">
+              Choose your avatar and save your Player Name:
+            </p>
+            <div class="avatar-pick-grid" id="profileAvatarGrid"></div>
+            <div class="form-field-group" style="margin-bottom:12px;">
+              <label for="inputAcctName">Player Name</label>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <button type="button" class="secondary-btn" id="btnAcctCycleAvatar" style="width:46px;height:42px;padding:0;font-size:1.25rem;" title="Tap to Change Avatar">🦊</button>
+                <input type="text" class="neon-input" id="inputAcctName" maxlength="20" placeholder="Enter Your Name" style="flex:1;" />
+              </div>
+              <input type="hidden" id="inputAcctEmail" />
+              <span id="acctCurrentKeyLabel" style="display:none;"></span>
+            </div>
+            <button type="button" class="primary-btn gold" id="btnSaveAndSyncAccount">
+              ✓ Save Player Name
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5A. Board & UI Themes Modal (6 Luxury Themes + #6 Sovereign Legend!) -->
+      <div class="modal-backdrop" id="modalThemes">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3>🌌 Premium & Legendary Board Themes</h3>
+            <button class="close-x" data-close="modalThemes">✕</button>
+          </div>
+          <div class="modal-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <span style="font-size:0.78rem;font-weight:700;color:var(--text-muted);" id="playThemesUnlockedCount">1/6 Unlocked</span>
+              <button class="gems-chip" id="btnModalThemesGems">💎 0 +</button>
+            </div>
+            <div class="premium-themes-grid" id="modalThemesGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5B. Arrow Skins Modal (Trail Effects Removed From Here!) -->
+      <div class="modal-backdrop" id="modalSkins">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3>🏹 Arrow Skins</h3>
+            <button class="close-x" data-close="modalSkins">✕</button>
+          </div>
+          <div class="modal-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <span style="font-size:0.78rem;font-weight:700;color:var(--text-muted);" id="skinsModalUnlockedCount">1/8 Unlocked</span>
+              <button class="gems-chip" id="btnModalSkinsGems">💎 0 +</button>
+            </div>
+            <div class="arrow-skins-grid" id="modalArrowSkinsGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5C. Dedicated Trail Effects Modal -->
+      <div class="modal-backdrop" id="modalTrails">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3>✨ Trail Effects</h3>
+            <button class="close-x" data-close="modalTrails">✕</button>
+          </div>
+          <div class="modal-body">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <span style="font-size:0.78rem;font-weight:700;color:var(--text-muted);" id="trailsModalUnlockedCount">1/8 Unlocked</span>
+              <button class="gems-chip" id="btnModalTrailsGems">💎 0 +</button>
+            </div>
+            <div class="trail-effects-grid" id="modalTrailsGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. 150-Level Campaign Map & Collection Album -->
+      <div class="modal-backdrop" id="modalAlbum">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3>🗺️ Levels 1–150</h3>
+            <button class="close-x" data-close="modalAlbum">✕</button>
+          </div>
+          <div class="modal-body">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;">
+              <select id="selectChapter" style="flex:1;padding:8px 10px;border-radius:10px;border:1px solid var(--border-neon);background:var(--bg-slot);color:var(--text-main);font-weight:700;font-size:0.8rem;"></select>
+              <span id="albumProgressBadge" style="font-size:0.75rem;font-weight:800;margin-left:8px;color:var(--gold-primary);">0/150</span>
+            </div>
+            <div style="font-size:0.72rem;color:var(--text-muted);margin-bottom:10px;">
+              Clear levels one by one (+5 💎 each), or tap any locked card to unlock it directly with Gems!
+            </div>
+            <div class="album-grid" id="albumGrid"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. Settings, 120 FPS, Haptics & Achievements Modal -->
+      <div class="modal-backdrop" id="modalSettings">
+        <div class="modal-card">
+          <div class="modal-header">
+            <h3 id="secretAdminTriggerTitle" style="user-select:none;cursor:default;">⚙️ 120 FPS, Haptics & Settings</h3>
+            <button class="close-x" data-close="modalSettings">✕</button>
+          </div>
+          <div class="modal-body">
+            <div class="setting-row">
+              <span>Refresh Rate (ProMotion Mobile)</span>
+              <button class="toggle-pill on" id="btnToggleFps">120 FPS Ultra</button>
+            </div>
+            <div class="setting-row">
+              <span>Tactile Haptic Feel</span>
+              <div style="display:flex;gap:6px;">
+                <button class="toggle-pill" id="btnToggleHaptics">OFF</button>
+                <button class="toggle-pill" id="btnTestHaptics" title="Test Haptic Pulse">📳 Test</button>
+              </div>
+            </div>
+            <div class="setting-row">
+              <span>Soft ASMR Sound</span>
+              <button class="toggle-pill on" id="btnToggleSound">ON</button>
+            </div>
+
+            <div style="margin-top:11px;display:flex;flex-direction:column;gap:8px;">
+              <button class="secondary-btn" id="btnOpenAccountFromSettings" style="padding:9px 12px;font-size:0.78rem;">
+                👤 Edit Player Name &amp; Avatar
+              </button>
+              <button class="primary-btn" id="btnDownloadOfflineGame" style="padding:10px 12px;font-size:0.78rem;">
+                ⬇️ Download Full Game (Offline APK / ZIP)
+              </button>
+            </div>
+
+            <h4 style="margin:14px 0 8px;color:var(--gold-primary);font-size:0.9rem;">🏅 Achievements</h4>
+            <div id="achievementsList" style="display:flex;flex-direction:column;gap:7px;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8B. Full Offline Game Download Modal (Android APK + Full Game ZIP + Direct App Install!) -->
+      <div class="modal-backdrop" id="modalDownloadGame">
+        <div class="modal-card" style="max-width:380px;">
+          <div class="modal-header">
+            <h3>⬇️ Download Full Game</h3>
+            <button class="close-x" data-close="modalDownloadGame">✕</button>
+          </div>
+          <div class="modal-body">
+            <div style="text-align:center;padding:10px 12px;border-radius:13px;background:var(--bg-slot);border:1px solid var(--border-neon);margin-bottom:12px;">
+              <div style="font-size:1.55rem;margin-bottom:4px;">🏹</div>
+              <div style="font-size:0.9rem;font-weight:900;color:var(--gold-primary);">Arrow Puzzle — Full Offline Edition</div>
+              <div style="font-size:0.72rem;color:var(--text-muted);margin-top:3px;line-height:1.4;" id="downloadModalStatusText">
+                Includes all 150 Levels, 120 FPS World Themes, Skins, Trails &amp; Sound — runs 100% offline with zero internet!
+              </div>
+            </div>
+
+            <div class="btn-stack">
+              <button type="button" class="primary-btn gold" id="btnModalDownloadApk" style="padding:11px 12px;font-size:0.82rem;">
+                📱 Download Android Game (.APK)
+              </button>
+              <button type="button" class="primary-btn" id="btnModalDownloadZip" style="padding:10px 12px;font-size:0.8rem;">
+                📦 Download Full Game Package (.ZIP)
+              </button>
+              <button type="button" class="secondary-btn" id="btnModalInstallPwa" style="display:none;padding:9px 12px;font-size:0.78rem;">
+                📲 Install Instant Home Screen App
+              </button>
+            </div>
+
+            <div style="font-size:0.69rem;color:var(--text-muted);text-align:center;margin-top:10px;line-height:1.45;">
+              <strong>Android Phones:</strong> Open <strong>Arrow-Puzzle.apk</strong> after download &amp; tap <strong>Install</strong> to play offline anytime.<br/>
+              <strong>PC / Laptop:</strong> Extract <strong>Arrow-Puzzle-Full-Game.zip</strong> &amp; open the game launcher offline.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. Startup Player Name Modal (Opens Right When Game Launches!) -->
+      <div class="modal-backdrop" id="modalWelcomeName">
+        <div class="modal-card" style="max-width:375px;text-align:center;">
+          <div class="modal-header">
+            <h3>👋 Welcome to Arrow Puzzle!</h3>
+          </div>
+          <div class="modal-body">
+            <p style="margin:0 0 11px;font-size:0.77rem;color:var(--text-muted);line-height:1.45;">
+              Pick your avatar and enter your Player Name to begin your puzzle journey!
+            </p>
+            <div class="avatar-pick-grid" id="welcomeAvatarGrid"></div>
+            <div class="form-field-group" style="text-align:left;margin-bottom:12px;">
+              <label for="inputWelcomePlayerName">Player Name</label>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <button type="button" class="secondary-btn" id="btnWelcomeAvatar" style="width:46px;height:42px;padding:0;font-size:1.25rem;" title="Tap to Change Avatar">🦊</button>
+                <input type="text" class="neon-input" id="inputWelcomePlayerName" maxlength="20" placeholder="Enter Your Name" style="flex:1;" />
+              </div>
+            </div>
+            <button type="button" class="primary-btn gold" id="btnSaveWelcomeName">
+              ▶ Save Name &amp; Start Playing
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= PERSISTENT GLOBAL BOTTOM NAV (4 Sections: Home, Arrows, Trail Effects, Themes!) ================= -->
+      <nav class="global-bottom-nav" id="globalBottomNav" aria-label="Main Navigation">
+        <button class="gnav-btn active" id="gnavHome" data-nav="home">
+          <span class="gnav-ico">🏠</span>
+          <span class="gnav-lbl">Home</span>
+        </button>
+        <button class="gnav-btn" id="gnavArrows" data-nav="arrows">
+          <span class="gnav-ico">🏹</span>
+          <span class="gnav-lbl">Arrows</span>
+        </button>
+        <button class="gnav-btn" id="gnavTrails" data-nav="trails">
+          <span class="gnav-ico">✨</span>
+          <span class="gnav-lbl">Trail Effects</span>
+        </button>
+        <button class="gnav-btn" id="gnavThemes" data-nav="themes">
+          <span class="gnav-ico">🌌</span>
+          <span class="gnav-lbl">Themes</span>
+        </button>
+      </nav>
+    </main>
+  </div>
+
+  <script src="js/shapes.js?v=17"></script>
+  <script src="js/generator.js?v=17"></script>
+  <script src="js/audio.js?v=17"></script>
+  <script src="js/leaderboard.js?v=17"></script>
+  <script src="js/merchant-qr.js?v=17"></script>
+  <script src="js/app.js?v=17"></script>
+</body>
+</html>

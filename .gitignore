@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.vercel/
+.gunicorn/
+.DS_Store
+uploads/
+vendor_pkgs/
+arrow-puzzle-arena-vercel.zip
+data/accounts.json
+data/orders.json
+data/payment_config.json
+data/challenges.json
+data/daily_arena.json
+data/friends.json
